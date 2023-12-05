@@ -1,0 +1,16 @@
+clip
+huggingface_hub
+imageio
+matplotlib==3.7.3
+numpy
+opencv_python==4.8.1.78
+Pillow
+Pygments
+pyrealsense2==2.54.2.5684
+scipy
+segment_anything==1.0
+tensorboardX
+pybullet
+attrdict
+scikit-image
+openai-clip
