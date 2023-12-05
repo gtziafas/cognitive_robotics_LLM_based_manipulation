@@ -18,6 +18,7 @@ Finally, run
 ```
 pip install -r requirements.txt
 ```
+Finally, you will have to download the pretrained Gr-ConvNet model from the original repo, e.g. [here](cornell-randsplit-rgbd-grconvnet3-drop1-ch32) for RGB-D model pretrained in Cornell). You could also just copy-paste the model from your lab assignment. Create a folder `checkpoints` in the repo's root directory and place it there.
 
 ### LLM access
 You will need to get a user access token to the Hugging Hub from [here](https://huggingface.co/docs/hub/security-tokens). This allows to use BLOOM (under the `bigscience/bloom` model tag), which offers a good compromise of performance and response time. Set your token in `llm_utils.py`
