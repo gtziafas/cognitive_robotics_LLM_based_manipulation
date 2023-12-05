@@ -90,6 +90,14 @@ objects = ["potted meat can", "power drill", "chips can", "hammer", "tomato soup
 robot.pick_and_place("potted meat can", "tray")
 robot.pick_and_place("chips can", "tray")
 robot.pick_and_place("tomato soup can", "tray")
+objects = ["power drill", "strawberry", "medium clamp", "gelatin box", "tray"]
+# move the clamp behind of the drill
+robot.pick_and_place("medium clamp", "power drill", "behind")
+# actually, I want it on the opposite side of the drill
+robot.pick_and_place("medium clamp", "power drill", "front")
+objects = ["chips can", "banana", "strawberry", "potted meat can", "pear", "tray"]
+# put the red fruit left of the green one 
+robot.pick_and_place("strawberry", "pear", "left")
 """.strip()
 
 
@@ -115,4 +123,8 @@ objects = scene_init()
 cans = find(objects, "can")
 for can in cans:
 	pick_and_place(can, "tray")
+# move the clamp behind of the drill
+clamp = find(objects, "clamp")
+drill = find(objects, "dril"")
+pick_and_place(clamp, drill, "behind")
 """.strip()
