@@ -24,16 +24,17 @@ DEPTH_RADIUS = 1
 IMG_SIZE = 224
 
 TARGET_LOCATIONS = {
-  'top left corner':     (0.35,        -0.7,       1.0),
-  'top side':            (0,           -0.7,       1.0),
-  'top right corner':    (-0.35,        -0.7,       1.0),
-  'left side':           (0.35,        -0.45,      1.0),
-  'middle':              (0,           -0.45,      1.0),
-  'right side':          (-0.35,       -0.45,      1.0),
+  'top left corner':     (0.35,        -0.85,       1.0),
+  'top side':            (0,           -0.85,       1.0),
+  'top right corner':    (-0.3,        -0.85,       1.0),
+  'left side':           (0.3,        -0.5,      1.0),
+  'middle':              (0,           -0.5,      1.0),
+  'right side':          (-0.3,       -0.5,      1.0),
   'bottom left corner':  (0.35,       -0.15,      1.0),
   'bottom side':         (0,           -0.15,      1.0),
-  'bottom right corner': (-0.35,       -0.15,      1.0),
+  'bottom right corner': (-0.3,       -0.15,      1.0),
 }
+TARGET_ZONE_POS = [0.7, 0.0, 0.685]
 
 class FailToReachTargetError(RuntimeError):
     pass
@@ -43,7 +44,7 @@ class Environment:
     OBJECT_INIT_HEIGHT = 1.05
     GRIPPER_MOVING_HEIGHT = 1.25
     GRIPPER_GRASPED_LIFT_HEIGHT = 1.4
-    TARGET_ZONE_POS = [0.7, 0.0, 0.685]
+    TARGET_ZONE_POS = TARGET_ZONE_POS
     SIMULATION_STEP_DELAY = 0.0005 #speed of simulator - the lower the fatser ## should be a param
     FINGER_LENGTH = 0.06
     Z_TABLE_TOP = 0.785
@@ -405,6 +406,13 @@ class Environment:
             self.obj_grasps[i] = None
         self.wait_until_all_still()
 
+    def set_obj_state(self, state):
+        for i, item in enumerate(state):
+            p.resetBasePositionAndOrientation(
+                item['id'], item['pos'], item['orn'])
+            self.obj_grasps[i] = None
+        self.wait_until_all_still()
+        
     def update_obj_states(self):
         for i, obj_id in enumerate(self.obj_ids):
             pos, orn = p.getBasePositionAndOrientation(obj_id)
@@ -644,7 +652,7 @@ class Environment:
             
         return succes_grasp, grasped_obj_id, None
 
-    def place_in_loc(self, target_loc: str, vis: bool = False):
+    def place_in_loc(self, target_loc: Union[List[float], str], vis: bool = False):
         """
         Place object in target location
         """
@@ -653,10 +661,16 @@ class Environment:
         except:
             print('No object currently in gripper. Exitting.')
             return False
-            
-        # Move object to target zone
-        assert target_loc in self.TARGET_LOCATIONS.keys(), f'unknown location {target_loc}'
-        x, y, z = self.TARGET_LOCATIONS[target_loc]
+        
+        # Check if target location is 3D position
+        if isinstance(target_loc, list) or isinstance(target_loc, tuple):
+            x, y, z = target_loc
+
+        # Move object to target table region
+        elif isinstance(target_loc, str):
+            assert target_loc in self.TARGET_LOCATIONS.keys(), f'unknown location {target_loc}'
+            x, y, z = self.TARGET_LOCATIONS[target_loc]
+        
         tgt_orn = p.getQuaternionFromEuler([-np.pi*0.25, np.pi/2, 0.0])
 
         self.move_ee([x, y, z, tgt_orn])

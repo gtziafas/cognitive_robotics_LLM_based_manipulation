@@ -55,10 +55,10 @@ class SamInference:
         self.backbone = backbone
         sam_model = sam_model_registry[self.backbone](checkpoint=self.checkpoint).to(device)
 
-            self.mask_generator = SamAutomaticMaskGenerator(
-                model=sam_model,
-                **self.cfg
-            )
+        self.mask_generator = SamAutomaticMaskGenerator(
+            model=sam_model,
+            **self.cfg
+        )
 
     def segment(self, image):
         if isinstance(image, str):

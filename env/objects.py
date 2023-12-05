@@ -1,5 +1,25 @@
 import random 
 
+YCB_CATEGORIES = [
+ 'scissors',
+ 'gelatin box',
+ 'cracker box',
+ 'strawberry',
+ 'power drill',
+ 'chips can',
+ 'foam brick',
+ 'potted meat can',
+ 'tennis ball',
+ 'medium clamp',
+ 'banana', 
+ 'pear',
+ 'master chef can',
+ 'tomato soup can',
+ 'mustard bottle',
+ 'hammer'
+]
+
+
 class YcbObjects:
     def __init__(self, load_path, mod_orn=None, mod_stiffness=None, exclude=None, seed=None):
         if seed is not None:
