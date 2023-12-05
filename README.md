@@ -18,7 +18,7 @@ Links:
 * [Environment and robot primitives](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_robot_primitives.ipynb)
 * [CLIP for zero-shot recognition](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_clip_recognition.ipynb)
 * [Querying LLMs for task planning](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_LLM_queries.ipynb)
-* [Interactive human-robot interaction demo](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_interactive_demo.ipynb)
+* [Interactive demo](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_interactive_demo.ipynb)
 
 ## Demo
 You can directly run a demo with `python3 demo.py`. Regarding the implemented UI:
