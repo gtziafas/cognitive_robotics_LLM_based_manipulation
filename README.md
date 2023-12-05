@@ -2,7 +2,19 @@
 Pybullet-based environment and methods for controlling a robot via natural language instructions. The agent uses a Large Language Model (LLM) to decompose the user's instruction in a sequence of pick-and-place steps that can achieve the final goal. The system uses [CLIP](https://openai.com/research/clip) Vision-Language Model (VLM) for zero-shot object recognition, the [BLOOM](https://bigscience.huggingface.co/blog/bloom) LLM for planning, and the [GR-ConvNet](https://github.com/skumra/robotic-grasping) grasp synthesis model for grasping objects from the [YCB](https://www.ycbbenchmarks.com/) dataset
 
 ## Installation
-The code has been tested in `python3.8`. Create a virtual environment and run
+The code has been tested in `python3.8`. Create a virtual environment `
+```
+python3 -m venv <your_venv_name>`
+source <your_venv_name>/bin/activate
+pip install --upgrade pip setuptools wheel
+```
+
+Then, install `torch` for your own CUDA driver from [here](). For example, for latest `torch` with CUDA driver 11.8:
+```
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+```
+
+Finally, run
 ```
 pip install -r requirements.txt
 ```
