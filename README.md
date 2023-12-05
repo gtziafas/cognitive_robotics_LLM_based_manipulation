@@ -64,7 +64,7 @@ Known issues:
 
 ## Notes
 * The current implemtation uses ground-truth segmentation masks from Pybullet. If you want to replace that with the [SAM](https://github.com/facebookresearch/segment-anything) model, check out `sam_utils.py` for its usage. You will have to implement the logic for integrating SAM inside `ui.py`. Follow the comments that indicate SAM integration.
-* The current implementation follows the prompt template from [Socratic Models](), which uses the VLM as an open-vocabulary object detector, and can be found in `llm_utils.prompt_pick_and_place_detection`. We also provide another structure (check `llm_utils.prompt_pick_and_place_grounding`) which uses CLIP for referring object grounding and a Python-like plan from the LLM. You will have to integrate this logic inside `ui.py` if you want to switch to that.
+* The current implementation follows the prompt template from [Socratic Models](https://socraticmodels.github.io/), which uses the VLM as an open-vocabulary object detector, and can be found in `llm_utils.prompt_pick_and_place_detection`. We also provide another structure (check `llm_utils.prompt_pick_and_place_grounding`) which uses CLIP for referring object grounding and a Python-like plan from the LLM. You will have to integrate this logic inside `ui.py` if you want to switch to that.
 * Running many experiments may leed to exceeding the rate quota from Hugging Hub. I believe the rate limit is refreshed hourly.
 
 Please remember to make a branch based on your group ID for pushing changes.
