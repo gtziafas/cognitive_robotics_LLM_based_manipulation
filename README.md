@@ -9,7 +9,7 @@ source <your_venv_name>/bin/activate
 pip install --upgrade pip setuptools wheel
 ```
 
-Then, install `torch` for your own CUDA driver from [here](). For example, for latest `torch` with CUDA driver 11.8:
+Then, install `torch` for your own CUDA driver from [here](https://pytorch.org/get-started/locally/). For example, for latest `torch` with CUDA driver 11.8:
 ```
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
 ```
