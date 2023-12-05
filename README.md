@@ -1,4 +1,4 @@
-# cognitive_robotics_LLM_based_manipulation
+# LLM-based Pick-and-Place Manipulation in Pybullet
 Pybullet-based environment and methods for controlling a robot via natural language instructions. The agent uses a Large Language Model (LLM) to decompose the user's instruction in a sequence of pick-and-place steps that can achieve the final goal. The system uses [CLIP](https://openai.com/research/clip) Vision-Language Model (VLM) for zero-shot object recognition, the [BLOOM](https://bigscience.huggingface.co/blog/bloom) LLM for planning, and the [GR-ConvNet](https://github.com/skumra/robotic-grasping) grasp synthesis model for grasping objects from the [YCB](https://www.ycbbenchmarks.com/) dataset
 
 ## Installation
