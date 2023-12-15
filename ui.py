@@ -1,10 +1,15 @@
 import time
 from pygments import highlight
 from pygments.lexers import PythonLexer
-from pygments.formatters import TerminalFormatter
+from pygments.formatters import TerminalFormatter, HtmlFormatter
+import tkinter as tk
+from tkinter import simpledialog, messagebox, scrolledtext
+import webbrowser
+import tempfile
+import streamlit as st
 
-pprint = lambda s: display(HTML(highlight(s, PythonLexer(), HtmlFormatter(full=True))))
-pprint = lambda s: print(highlight(s, PythonLexer(), TerminalFormatter()).strip())
+# pprint = lambda s: display(HTML(highlight(s, PythonLexer(), HtmlFormatter(full=True))))
+#pprint = lambda s: print(highlight(s, PythonLexer(), TerminalFormatter()).strip())
 
 from env.camera import Camera
 from env.env import *
@@ -18,6 +23,34 @@ from env.objects import YCB_CATEGORIES as ADMISSIBLE_OBJECTS
 
 
 ADMISSIBLE_PREDICATES = ["on", "left", "right", "behind", "front"]
+
+
+# GUI stuff
+# Function to create a text input dialog using Tkinter
+def ask_for_user_input():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    user_input = simpledialog.askstring("Input", "User Input: ")
+    root.destroy()
+    return user_input
+
+# Function to display a message with the result
+# def display_result(result):
+#     root = tk.Tk()
+#     root.withdraw()  # Hide the main window
+#     formatted_code = highlight(result, PythonLexer(), HtmlFormatter(full=True, style='friendly'))
+#     messagebox.showinfo("Plan", formatted_code)
+#     root.destroy()
+# Function to display a message with the result
+# def display_result(result):
+#     # Use Pygments to format the Python code
+#     formatted_code = highlight(result, PythonLexer(), HtmlFormatter(full=True, style='friendly'))
+#     # Create a temporary HTML file to display the result
+#     with open("code.html", "w") as f:
+#         f.write(formatted_code)
+#     # Open the HTML file in the default web browser
+#     webbrowser.open("code.html")
+
 
 
 class RobotEnvUI:
@@ -299,7 +332,9 @@ class RobotEnvUI:
         while True:
 
             # ask user for command
-            user_input = input('User Input: ')
+            #user_input = input('User Input: ')
+            user_input = ask_for_user_input()
+            #user_input = ask_for_user_input_and_display_result()
 
             # clear history
             if user_input == ':clear':
@@ -335,9 +370,13 @@ class RobotEnvUI:
                 response = self.LLM(query, prompt=self.prompt, max_length=128, 
                                     stop_tokens=['#', 'objects = [']).strip()
                 print()
-                print(query + '\n' + response)  
-                print() 
-                
+                #pprint(query + '\n' + response)  
+                print(highlight(query + '\n' + response, PythonLexer(), TerminalFormatter()).strip())
+                print()
+                #formatted_result = highlight(query + '\n' + response, PythonLexer(), HtmlFormatter(style='friendly'))
+                #ask_for_user_input_and_display_result(initial_message=user_input, result_message=formatted_result)
+                #display_result(query + '\n' + response)
+
                 # parse commands
                 step_cmds = response.split('\n')
                 n_steps = len(step_cmds)
