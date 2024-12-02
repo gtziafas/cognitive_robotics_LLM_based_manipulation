@@ -1,5 +1,5 @@
 # LLM-based Pick-and-Place Manipulation in Pybullet
-Pybullet-based environment and methods for controlling a robot via natural language instructions. The agent uses a Large Language Model (LLM) to decompose the user's instruction in a sequence of pick-and-place steps that can achieve the final goal. The system uses [CLIP](https://openai.com/research/clip) Vision-Language Model (VLM) for zero-shot object recognition, the [BLOOM](https://bigscience.huggingface.co/blog/bloom) LLM for planning, and the [GR-ConvNet](https://github.com/skumra/robotic-grasping) grasp synthesis model for grasping objects from the [YCB](https://www.ycbbenchmarks.com/) dataset
+Pybullet-based environment and methods for controlling a robot via natural language instructions. The agent uses a Large Language Model (LLM) to decompose the user's instruction in a sequence of pick-and-place steps that can achieve the final goal. The system uses [CLIP](https://openai.com/research/clip) Vision-Language Model (VLM) for zero-shot object recognition, the [Llama-3](https://ai.meta.com/blog/meta-llama-3) LLM for planning, and the [GR-ConvNet](https://github.com/skumra/robotic-grasping) grasp synthesis model for grasping objects from the [YCB](https://www.ycbbenchmarks.com/) dataset
 
 ## Installation
 The code has been tested in `python3.8`. Create a virtual environment `
@@ -21,12 +21,12 @@ pip install -r requirements.txt
 Finally, you will have to download the pretrained Gr-ConvNet model from the original repo, (e.g. [here](https://github.com/skumra/robotic-grasping/tree/master/trained-models/cornell-randsplit-rgbd-grconvnet3-drop1-ch32) for RGB-D model pretrained in Cornell). You could also just copy-paste the model from your lab assignment. Create a folder `checkpoints` in the repo's root directory and place it there.
 
 ### LLM access
-You will need to get a user access token to the Hugging Hub from [here](https://huggingface.co/docs/hub/security-tokens). This allows to use BLOOM (under the `bigscience/bloom` model tag), which offers a good compromise of performance and response time. Set your token in `llm_utils.py`
+You will need to get a user access token to the Hugging Hub from [here](https://huggingface.co/docs/hub/security-tokens). This allows to utilize the `InferenceClient` service of HuggingFace Hub in order to call different LLMs (we use a distilled Llama-3.2 -- under the `meta-llama/Llama-3.2-3B-Instruct` model tag), which offers a good compromise of performance and response time. Set your token in `llm_utils.py`
 
 If you want to use the GPT series, you need to get an OpenAI api key like in [here](https://www.maisieai.com/help/how-to-get-an-openai-api-key-for-chatgpt) (first 18 dollars for free, then pay per token usage). Follow instructions from OpenAI's [documentation](https://platform.openai.com/docs/quickstart?context=python) to replace Hugging Hub Inference API with OpenAI web api. 
 
 ## Example Usage
-This repo contains utilities for loading the robot and objects, integrating GR-ConvNet for robot primitive actions (e.g. pick object, place in table region, put in tray etc.), integrating CLIP for zero-shot object recognition and using the Hugging Hub Inference API for access to the BLOOM LLM. You can find example usage for each of these components in notebooks under `examples`. 
+This repo contains utilities for loading the robot and objects, integrating GR-ConvNet for robot primitive actions (e.g. pick object, place in table region, put in tray etc.), integrating CLIP for zero-shot object recognition and using the Hugging Hub Inference API for text generation with a Llama-3 LLM. You can find example usage for each of these components in notebooks under `examples`. 
 Links:
 * [Environment and robot primitives](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_robot_primitives.ipynb)
 * [CLIP for zero-shot recognition](https://github.com/gtziafas/cognitive_robotics_LLM_based_manipulation/blob/main/examples/example_clip_recognition.ipynb)
@@ -38,7 +38,7 @@ You can directly run a demo with `python3 demo.py`. Regarding the implemented UI
 
 Types of instructions:
 * <ins>put `[obj`] in `[region]`</ins>, e.g: *"put the banana in the top right corner"*
-* <ins>put `[obj]` in the tray / clean `[obj]`</ins>, e.g: *"clean the scissors"*
+* <ins>put `[obj]` in the tray</ins>, e.g: *"put the scissors in the tray"*
 * <ins>put `[obj]` on the `[rel]` of `[obj]`</ins>, e.g.: *"put the hammer left of the tomato soup can"*
 
 1. <ins>Available regions</ins>: *top/bottom/right/left side, top/bottom left/right corner, middle*
