@@ -21,7 +21,7 @@ from .robot import setup_sisbot
 
 CAM_X, CAM_Y, CAM_Z = 0.05, -0.52, 1.9
 DEPTH_RADIUS = 1
-IMG_SIZE = 224
+IMG_SIZE = 448
 
 TARGET_LOCATIONS = {
   'top left corner':     (0.35,        -0.85,       1.0),
@@ -61,7 +61,8 @@ class Environment:
 
         self.assets_root = asset_root
 
-        self.obj_init_pos = (camera.x, camera.y)
+        #self.obj_init_pos = (camera.x, camera.y)
+        self.obj_init_pos = CAM_X, CAM_Y
         self.obj_ids = []
         self.obj_names = []
         self.obj_positions = []

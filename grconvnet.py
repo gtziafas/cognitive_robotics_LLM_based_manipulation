@@ -196,4 +196,8 @@ class GraspGenerator:
 
 def load_grasp_generator(camera, checkpoint="cornell-randsplit-rgbd-grconvnet3-drop1-ch32/epoch_19_iou_0.98"):
 	fig = plt.figure(figsize=(10,10))
-	return GraspGenerator(checkpoint, camera, DEPTH_RADIUS, fig, IMG_SIZE, 'GR_ConvNet', device)
+	return GraspGenerator(checkpoint, camera, DEPTH_RADIUS, fig, 224, 'GR_ConvNet', device)
+
+
+
+
