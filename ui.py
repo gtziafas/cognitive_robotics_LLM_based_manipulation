@@ -6,7 +6,9 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox, scrolledtext
 import webbrowser
 import tempfile
-import streamlit as st
+from PIL import Image
+import cv2
+#import streamlit as st
 
 # pprint = lambda s: display(HTML(highlight(s, PythonLexer(), HtmlFormatter(full=True))))
 #pprint = lambda s: print(highlight(s, PythonLexer(), TerminalFormatter()).strip())
@@ -17,7 +19,7 @@ from env.objects import YcbObjects
 from grconvnet import load_grasp_generator
 from clip_utils import ClipInference
 from sam_utils import SamInference
-from llm_utils import BLOOM, prompt_pick_and_place_detection
+from llm_utils import prompt_pick_and_place_detection, LLM
 
 from env.objects import YCB_CATEGORIES as ADMISSIBLE_OBJECTS
 
@@ -97,7 +99,7 @@ class RobotEnvUI:
         self.visualise_grasps = visualise_grasps
         
         # define LLM callable and params
-        self.LLM = BLOOM
+        self.LLM = LLM
         self.prompt = prompt_pick_and_place_detection
         self.history = []
         self.n_action_attempts = n_action_attempts
@@ -196,7 +198,11 @@ class RobotEnvUI:
         visualise_grasps = visualise_grasps or self.visualise_grasps
         
         rgb, depth, seg = self.env.camera.get_cam_img()    
-        
+        img_size = self.grasp_generator.IMG_WIDTH
+        if  img_size != self.env.camera.width: 
+            rgb = cv2.resize(rgb, (img_size, img_size))
+            depth = cv2.resize(depth, (img_size, img_size))  
+
         # @TODO: Alternatively pass masks from SAM for non groundtruth segm here
         if self.ground_truth_segm:
             masks = [seg == obj_id for obj_id in obj_ids]
@@ -206,6 +212,8 @@ class RobotEnvUI:
         #for obj_id in self.env.obj_ids:
         for obj_id, mask in zip(obj_ids, masks):
             # mask = seg == obj_id
+            if img_size != self.env.camera.width:
+                mask = np.array(Image.fromarray(mask).resize((img_size, img_size), Image.LANCZOS))
             if obj_id not in self.env.obj_ids:
                 continue
             grasps = self.grasp_generator.predict_grasp_from_mask(rgb,

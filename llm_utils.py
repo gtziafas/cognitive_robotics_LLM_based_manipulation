@@ -1,14 +1,15 @@
-from huggingface_hub import InferenceApi
+from huggingface_hub import InferenceClient
 import time
 
 hugging_hub_token = None
 if hugging_hub_token is None:
-	raise ValueError("Get your Hugging Hub API token from here: https://huggingface.co/docs/hub/security-tokens.\nThen, set it in llm_utils.py.")
+    raise ValueError("Get your Hugging Hub API token from here: https://huggingface.co/docs/hub/security-tokens.\nThen, set it in llm_utils.py.")
 
-llm_inference = InferenceApi("bigscience/bloom", token=hugging_hub_token)
+#llm_inference = InferenceClient("bigscience/bloom", token=hugging_hub_token)
+llm_inference = InferenceClient("meta-llama/Llama-3.2-3B-Instruct", token=hugging_hub_token) #Llama-3.2
 
 
-def BLOOM(       query,
+def LLM(         query,
                  prompt,
                  stop_tokens = None,
                  max_length = 128,
@@ -23,17 +24,18 @@ def BLOOM(       query,
         "max_new_tokens": max_length,
         "top_k": None,
         "top_p": None,
-        "temperature": temperature,
+        #"temperature": temperature,
         "do_sample": False,
-        "seed": 42, #useless
-        "early_stopping":None,
-        "no_repeat_ngram_size":None,
-        "num_beams":None,
-        "return_full_text":return_full_text,
-        'wait_for_model' : True
+        # "seed": 42, #useless
+        # "early_stopping":None,
+        # "no_repeat_ngram_size":None,
+        # "num_beams":None,
+        # "return_full_text":return_full_text,
+        # 'wait_for_model' : True
     }
     s = time.time()
-    response = llm_inference(new_prompt, params=params)
+    #response = llm_inference(new_prompt, params=params)
+    response = llm_inference.text_generation(new_prompt, **params)
     proc_time = time.time()-s
     if verbose:
         print(f"Inference time {proc_time} seconds")
@@ -42,7 +44,7 @@ def BLOOM(       query,
         assert list(response.keys()) == ['error']
         raise ValueError(f'sth went wrong with prompt {new_prompt}')
 
-    response = response[0]['generated_text']
+    #response = response[0]['generated_text']
     #response = response[(response.find(query) + len(query) + 1):]
 
     if stop_tokens is not None:
@@ -56,15 +58,15 @@ def BLOOM(       query,
     return response
 
 
-def BLOOMWrapper(query, context, verbose=False):
+def LLMWrapper(query, context, verbose=False):
     query = query + ('.' if query[-1] != '.' else '') 
-    resp = BLOOM(query, prompt=prompt_plan, stop_tokens=['#']).strip()
+    resp = LLM(query, prompt=prompt_plan, stop_tokens=['#']).strip()
     resp_obj, resp_full = None, resp
     if 'parse_obj' in resp:
         steps = resp.split('\n')
         obj_query = [s for i, s in enumerate(steps) if 'parse_obj' in s][0].split('("')[1].split('")')[0]
         obj_query = context + '\n' + f'# {obj_query}.'
-        resp_obj = BLOOM(obj_query, prompt=prompt_parse_obj, stop_tokens=['#', 'objects = [']).strip()
+        resp_obj = LLM(obj_query, prompt=prompt_parse_obj, stop_tokens=['#', 'objects = [']).strip()
         resp_full = '\n'.join([resp, '\n' + obj_query, resp_obj])
     if verbose:
         print(query)
@@ -104,27 +106,29 @@ robot.pick_and_place("strawberry", "pear", "left")
 prompt_pick_and_place_grounding = """
 from robot_utils import pick_and_place
 from camera_utils import find, scene_init
+
+### start of trial
 objects = scene_init()
 # put the bottle to the left side.
 bottle = find(objects, "bottle")[0]
 pick_and_place(bottle, "left side")
+
+### start of trial
 objects = scene_init()
-# move the fruit to the bottom right corner.
+# move all the fruit to the bottom right corner.
 fruits = find(objects, "fruit")
-for fruit in fruits:
-	pick_and_place(fruit, "bottom right corner")
-# now put the green one in the top side.
-green_fruit = find(fruits, "green")
-pick_and_place(green_fruit, "top side")
+for fruit_instance in fruits:
+    pick_and_place(fruit_instance, "bottom right corner")
+# now put the small one in the right side.
+small_fruit = find(fruits, "small fruit")[0]
+pick_and_place(small_fruit, "right side")
 # undo the last step.
-pick_and_place(green_fruit, "bottom right corner")
+pick_and_place(small_fruit, "bottom right corner")
+
+### start of trial
 objects = scene_init()
 # put all cans in the tray.
 cans = find(objects, "can")
-for can in cans:
-	pick_and_place(can, "tray")
-# move the clamp behind of the drill
-clamp = find(objects, "clamp")
-drill = find(objects, "dril"")
-pick_and_place(clamp, drill, "behind")
+for can_instance in cans:
+    pick_and_place(can_instance, "tray")
 """.strip()
